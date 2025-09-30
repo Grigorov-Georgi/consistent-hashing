@@ -33,9 +33,9 @@ public class ConsistentHashRing<T> {
 
             List<Long> keys = new ArrayList<>(replicas);
             for (int i = 0; i < replicas; i++) {
-                long h = unsignedHash(node.toString() + "#" + i);
+                long h = ConsistentHashRing.unsignedHash(node.toString() + "#" + i);
                 while (ring.containsKey(h)) {
-                    h = unsignedHash(node.toString() + "#" + i + ":");
+                    h = ConsistentHashRing.unsignedHash(node.toString() + "#" + i + ":");
                 }
                 ring.put(h, node);
                 keys.add(h);
@@ -71,7 +71,7 @@ public class ConsistentHashRing<T> {
                 return null;
             }
 
-            long h = unsignedHash(key);
+            long h = ConsistentHashRing.unsignedHash(key);
             Map.Entry<Long, T> entry = ring.ceilingEntry(h);
             if (entry == null) {
                 // wrap around
@@ -95,7 +95,7 @@ public class ConsistentHashRing<T> {
                 return Collections.emptyList();
             }
 
-            long h = unsignedHash(key);
+            long h = ConsistentHashRing.unsignedHash(key);
             NavigableMap<Long, T> tail = ring.tailMap(h, true);
             Iterator<Map.Entry<Long, T>> it1 = tail.entrySet().iterator();
             Iterator<Map.Entry<Long, T>> it2 = ring.headMap(h, true).entrySet().iterator();
@@ -150,7 +150,7 @@ public class ConsistentHashRing<T> {
     }
 
     private static long unsignedHash(String s) {
-        int h = murmur3_32(s);
+        int h = ConsistentHashRing.murmur3_32(s);
         return h & 0xFFFF_FFFFL;
     }
 
